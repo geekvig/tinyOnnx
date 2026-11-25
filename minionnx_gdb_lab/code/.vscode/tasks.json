@@ -1,0 +1,47 @@
+{
+  // Terminal > Run Build Task (Ctrl+Shift+B) runs "build (debug)".
+  // On Windows the MSYS2 UCRT64 folder is put first on PATH so g++, gdb, cmake are found
+  // even if you did not change the system PATH. Change C:\\msys64 if you installed elsewhere.
+  "version": "2.0.0",
+  "windows": { "options": { "env": { "PATH": "C:\\msys64\\ucrt64\\bin;${env:PATH}" } } },
+  "tasks": [
+    {
+      "label": "configure (debug)",
+      "type": "shell",
+      "windows": { "command": "cmake --preset mingw-debug" },
+      "linux": { "command": "cmake --preset linux-debug" },
+      "osx": { "command": "cmake --preset linux-debug" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build (debug)",
+      "type": "shell",
+      "command": "cmake --build build -j 8",
+      "dependsOn": "configure (debug)",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "make models",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/make_models models",
+      "dependsOn": "build (debug)",
+      "problemMatcher": []
+    },
+    {
+      "label": "run tests",
+      "type": "shell",
+      "command": "ctest --test-dir build --output-on-failure",
+      "dependsOn": "build (debug)",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "build (release) + bench",
+      "type": "shell",
+      "windows": { "command": "cmake --preset mingw-release; cmake --build build-rel -j 8; .\\build-rel\\bench_minionnx.exe" },
+      "linux": { "command": "cmake -S . -B build-rel -DCMAKE_BUILD_TYPE=Release && cmake --build build-rel -j 8 && ./build-rel/bench_minionnx" },
+      "problemMatcher": "$gcc"
+    }
+  ]
+}

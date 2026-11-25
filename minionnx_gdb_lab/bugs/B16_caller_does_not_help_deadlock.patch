@@ -1,0 +1,11 @@
+--- a/src/core/thread_pool.hpp
++++ b/src/core/thread_pool.hpp
+@@ -117,7 +117,7 @@
+         };
+         const int64_t helpers = std::min<int64_t>(num_workers(), nchunks - 1);
+         for (int64_t i = 0; i < helpers; i++) submit(run);
+-        run();                                                       // the caller works too (rule 2)
++        // the caller simply waits for the helpers to finish the chunks
+         auto deadline = std::chrono::steady_clock::now() + std::chrono::microseconds(200);
+         while (st->done.load(std::memory_order_acquire) != nchunks && std::chrono::steady_clock::now() < deadline)
+             cpu_relax();

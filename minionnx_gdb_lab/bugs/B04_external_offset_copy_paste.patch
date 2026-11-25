@@ -1,0 +1,11 @@
+--- a/src/stage1_format/weights.cpp
++++ b/src/stage1_format/weights.cpp
+@@ -111,7 +111,7 @@
+             }
+             const std::string &blob = it->second;
+             const std::string off_s = ext_value(t, "offset"), len_s = ext_value(t, "length");
+-            const size_t off = off_s.empty() ? 0 : size_t(std::stoull(off_s));
++            const size_t off = off_s.empty() ? 0 : size_t(std::stoull(len_s));
+             const size_t len = len_s.empty() ? r.bytes : size_t(std::stoull(len_s));
+             if (len != r.bytes)
+                 throw FormatError("initializer '" + t.name + "': external length " + std::to_string(len) +

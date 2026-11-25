@@ -1,0 +1,11 @@
+--- a/src/stage3_ep/x86_ep.cpp
++++ b/src/stage3_ep/x86_ep.cpp
+@@ -93,7 +93,7 @@
+                 c30 = _mm256_fmadd_ps(a, b0, c30); c31 = _mm256_fmadd_ps(a, b1, c31);
+             }
+             store8(g, i, j, c00);     store8(g, i, j + 8, c01);
+-            store8(g, i + 1, j, c10); store8(g, i + 1, j + 8, c11);
++            store8(g, i + 1, j, c10); store8(g, i + 1, j + 8, c01);
+             store8(g, i + 2, j, c20); store8(g, i + 2, j + 8, c21);
+             store8(g, i + 3, j, c30); store8(g, i + 3, j + 8, c31);
+         }

@@ -1,0 +1,65 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "mingw-debug",
+      "displayName": "Windows MinGW g++ (Debug, for gdb)",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "CMAKE_CXX_COMPILER": "g++" }
+    },
+    {
+      "name": "mingw-release",
+      "displayName": "Windows MinGW g++ (Release, for benchmarks)",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build-rel",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_CXX_COMPILER": "g++" }
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Linux / WSL g++ (Debug)",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "linux-tsan",
+      "displayName": "Linux / WSL ThreadSanitizer",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/build-tsan",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo", "MINIONNX_SANITIZE": "thread" }
+    },
+    {
+      "name": "linux-asan",
+      "displayName": "Linux / WSL AddressSanitizer + UBSan",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/build-asan",
+      "cacheVariables": { "MINIONNX_SANITIZE": "address,undefined" }
+    },
+    {
+      "name": "arm64-cross",
+      "displayName": "Cross-compile for ARM64 Linux (run with qemu)",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/build-arm",
+      "toolchainFile": "${sourceDir}/cmake/toolchain-aarch64-linux.cmake",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "linux-cuda",
+      "displayName": "Linux / WSL with the CUDA EP",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/build-cuda",
+      "cacheVariables": { "MINIONNX_ENABLE_CUDA": "ON", "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "mingw-debug", "configurePreset": "mingw-debug", "jobs": 8 },
+    { "name": "mingw-release", "configurePreset": "mingw-release", "jobs": 8 },
+    { "name": "linux-debug", "configurePreset": "linux-debug", "jobs": 8 }
+  ],
+  "testPresets": [
+    { "name": "mingw-debug", "configurePreset": "mingw-debug", "output": { "outputOnFailure": true } },
+    { "name": "linux-debug", "configurePreset": "linux-debug", "output": { "outputOnFailure": true } }
+  ]
+}

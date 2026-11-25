@@ -1,0 +1,61 @@
+{
+  // Run and Debug (Ctrl+Shift+D), pick a configuration, press F5.
+  // "cppdbg" comes from the Microsoft C/C++ extension (ms-vscode.cpptools).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Windows: debug tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_minionnx.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+      "externalConsole": false,
+      "stopAtEntry": false,
+      "environment": [{ "name": "PATH", "value": "C:\\msys64\\ucrt64\\bin;${env:PATH}" }],
+      "setupCommands": [
+        { "description": "pretty-print STL containers", "text": "-enable-pretty-printing", "ignoreFailures": true },
+        { "description": "stop on C++ throw", "text": "catch throw", "ignoreFailures": true }
+      ],
+      "preLaunchTask": "build (debug)"
+    },
+    {
+      "name": "Windows: debug minionnx_run xor.onnx",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/minionnx_run.exe",
+      "args": ["models/xor.onnx", "--batch", "4", "--values", "0,0,0,1,1,0,1,1"],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+      "environment": [{ "name": "PATH", "value": "C:\\msys64\\ucrt64\\bin;${env:PATH}" }],
+      "setupCommands": [{ "text": "-enable-pretty-printing", "ignoreFailures": true }],
+      "preLaunchTask": "build (debug)"
+    },
+    {
+      "name": "Linux/WSL: debug tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_minionnx",
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [{ "text": "-enable-pretty-printing", "ignoreFailures": true }],
+      "preLaunchTask": "build (debug)"
+    },
+    {
+      "name": "Linux/WSL: debug minionnx_run xor.onnx",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/minionnx_run",
+      "args": ["models/xor.onnx", "--batch", "4", "--values", "0,0,0,1,1,0,1,1"],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [{ "text": "-enable-pretty-printing", "ignoreFailures": true }],
+      "preLaunchTask": "build (debug)"
+    }
+  ]
+}

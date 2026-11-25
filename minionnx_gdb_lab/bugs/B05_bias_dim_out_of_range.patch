@@ -1,0 +1,11 @@
+--- a/src/stage3_ep/kernel_utils.hpp
++++ b/src/stage3_ep/kernel_utils.hpp
+@@ -39,7 +39,7 @@
+ 
+ inline BiasMode bias_mode_for(const Tensor &c, int64_t M, int64_t N) {
+     if (c.numel() == 1) return BiasMode::Scalar;
+-    if (c.rank() <= 2 && c.cols() == N && c.rows() == 1) return BiasMode::Row;          // {N} or {1,N}
++    if (c.dim(1) == N && c.dim(0) == 1) return BiasMode::Row;                          // a [1,N] row
+     if (c.rank() == 2 && c.dim(0) == M && c.dim(1) == 1) return BiasMode::Column;       // {M,1}
+     if (c.rank() == 2 && c.dim(0) == M && c.dim(1) == N) return BiasMode::Full;         // {M,N}
+     throw std::runtime_error("Gemm: C of shape " + shape_str(c.shape()) + " cannot broadcast to [" +

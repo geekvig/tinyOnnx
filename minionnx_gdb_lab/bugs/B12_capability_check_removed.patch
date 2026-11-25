@@ -1,0 +1,10 @@
+--- a/src/stage3_ep/x86_ep.cpp
++++ b/src/stage3_ep/x86_ep.cpp
+@@ -216,7 +216,6 @@
+     }
+     // GetCapability: the fast Gemm kernel only handles the non-transposed form.
+     bool supports(const Node &n, const Graph &g) const override {
+-        if (n.op_type == "Gemm" && (n.attrs.get_int("transA", 0) || n.attrs.get_int("transB", 0))) return false;
+         return ExecutionProvider::supports(n, g);
+     }
+ };

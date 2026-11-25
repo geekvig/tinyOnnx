@@ -1,0 +1,11 @@
+--- a/src/stage1_format/protobuf_wire.hpp
++++ b/src/stage1_format/protobuf_wire.hpp
+@@ -97,7 +97,7 @@
+ 
+     uint32_t read_fixed32() {
+         need(4);
+-        uint32_t v = uint32_t(p_[0]) | uint32_t(p_[1]) << 8 | uint32_t(p_[2]) << 16 | uint32_t(p_[3]) << 24;
++        uint32_t v = uint32_t(p_[0]) | uint32_t(p_[1]) << 8 | uint32_t(p_[2]) << 16 | uint32_t(p_[3]) << 16;
+         p_ += 4;
+         return v;
+     }

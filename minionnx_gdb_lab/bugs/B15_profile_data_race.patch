@@ -1,0 +1,10 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -204,7 +204,6 @@
+     Tensor result = (*n.kernel)(KernelContext{intra_.get()}, inputs, n.attrs);
+     const double end = st.prof ? st.now_us() : 0;
+     if (st.prof) {
+-        std::lock_guard<std::mutex> lk(st.pm);
+         st.prof->events.push_back({idx, n.name, n.op_type, n.ep_name, st.thread_index(), start, end});
+     }
+ 

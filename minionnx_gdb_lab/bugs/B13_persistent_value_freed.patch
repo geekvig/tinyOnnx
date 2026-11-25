@@ -1,0 +1,11 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -216,7 +216,7 @@
+     // Release inputs AFTER the kernel is done with them. Whoever drops a count to zero frees
+     // the tensor; every other reader has already decremented, so nobody still uses it.
+     for (int v : n.in)
+-        if (v != kNoValue && !plan_.persistent[size_t(v)] &&
++        if (v != kNoValue &&
+             st.remaining[size_t(v)].fetch_sub(1, std::memory_order_acq_rel) == 1) {
+             st.slots[size_t(v)].reset();
+             st.live--;

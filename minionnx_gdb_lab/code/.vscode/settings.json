@@ -1,0 +1,7 @@
+{
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "C_Cpp.default.cppStandard": "c++17",
+  "cmake.configureOnOpen": false,
+  "files.associations": { "*.hpp": "cpp", "*.cu": "cuda-cpp" },
+  "editor.rulers": [120]
+}

@@ -1,0 +1,15 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -261,11 +261,7 @@
+     RunState &st = *stp;
+     for (;;) {
+         if (!st.failed.load(std::memory_order_relaxed)) {
+-            try { exec_node(st, idx); }
+-            catch (...) {
+-                std::lock_guard<std::mutex> lk(st.m);
+-                if (!st.failed.exchange(true)) st.first_error = std::current_exception();
+-            }
++            exec_node(st, idx);
+         }
+         std::vector<int> ready;
+         for (int d : plan_.dependents[size_t(idx)])

@@ -1,0 +1,12 @@
+--- a/src/stage2_graph/graph.cpp
++++ b/src/stage2_graph/graph.cpp
+@@ -114,7 +114,8 @@
+             if (v == kNoValue) continue;
+             const int p = producer[size_t(v)];
+             if (p < 0) continue;                                   // weight or graph input
+-            dependents[size_t(p)].push_back(i);
++            if (std::find(dependents[size_t(p)].begin(), dependents[size_t(p)].end(), i) == dependents[size_t(p)].end())
++                dependents[size_t(p)].push_back(i);                // avoid duplicate entries
+             indegree[size_t(i)]++;
+         }
+     std::queue<int> ready;

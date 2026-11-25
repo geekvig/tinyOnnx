@@ -1,0 +1,14 @@
+--- a/src/stage3_ep/cpu_ep.cpp
++++ b/src/stage3_ep/cpu_ep.cpp
+@@ -23,8 +23,9 @@
+     constexpr int64_t KB = 64;
+     const bool alpha_one = g.alpha == 1.f;
+     pool.parallel_for(0, g.M, gemm_row_grain(g), [&](int64_t rb, int64_t re) {
+-        for (int64_t i = rb; i < re; i++)
+-            for (int64_t j = 0; j < g.N; j++) g.Y[i * g.N + j] = alpha_one ? g.bias_at(i, j) : 0.f;
++        if (g.mode != BiasMode::None)                                  // nothing to add without a bias
++            for (int64_t i = rb; i < re; i++)
++                for (int64_t j = 0; j < g.N; j++) g.Y[i * g.N + j] = alpha_one ? g.bias_at(i, j) : 0.f;
+         for (int64_t p0 = 0; p0 < g.K; p0 += KB) {
+             const int64_t p1 = std::min(g.K, p0 + KB);
+             int64_t i = rb;

@@ -1,0 +1,12 @@
+--- a/src/stage2_graph/optimizer.cpp
++++ b/src/stage2_graph/optimizer.cpp
+@@ -137,7 +137,8 @@
+         }
+     }
+     std::vector<Node> kept;
+-    for (size_t i = 0; i < g.nodes.size(); i++) if (live[i]) kept.push_back(g.nodes[i]);
++    // walk backwards and insert at the front, so the original order is kept
++    for (size_t i = g.nodes.size() - 1; i >= 0; i--) if (live[i]) kept.insert(kept.begin(), g.nodes[i]);
+     const int removed = int(g.nodes.size() - kept.size());
+     g.nodes = std::move(kept);
+     return removed;

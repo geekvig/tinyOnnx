@@ -1,0 +1,11 @@
+--- a/src/stage2_graph/optimizer.cpp
++++ b/src/stage2_graph/optimizer.cpp
+@@ -86,7 +86,7 @@
+         Node &mm = g.nodes[i];
+         if (removed[i] || mm.op_type != "MatMul" || mm.inputs.size() != 2 || mm.outputs.size() != 1) continue;
+         const int t = mm.outputs[0];
+-        if (consumers[size_t(t)] != 1 || is_graph_output(g, t)) continue;          // (1)
++        if (is_graph_output(g, t)) continue;                                        // (1)
+         for (size_t j = 0; j < g.nodes.size(); j++) {
+             const Node &add = g.nodes[j];
+             if (j == i || removed[j] || add.op_type != "Add" || add.inputs.size() != 2) continue;

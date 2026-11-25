@@ -1,0 +1,11 @@
+--- a/src/stage3_ep/cpu_ep.cpp
++++ b/src/stage3_ep/cpu_ep.cpp
+@@ -134,7 +134,7 @@
+             float mx = -INFINITY;
+             for (int64_t j = 0; j < N; j++) mx = std::max(mx, x[j]);
+             float sum = 0.f;
+-            for (int64_t j = 0; j < N; j++) { o[j] = std::exp(x[j] - mx); sum += o[j]; }
++            for (int64_t j = 0; j < N; j++) { o[j] = std::exp(x[j]); sum += o[j]; }
+             for (int64_t j = 0; j < N; j++) o[j] /= sum;
+         }
+     });

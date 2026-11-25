@@ -1,0 +1,11 @@
+--- a/src/stage1_format/weights.cpp
++++ b/src/stage1_format/weights.cpp
+@@ -38,7 +38,7 @@
+ 
+ void decode_le_floats(const char *src, size_t n, float *dst) {
+     if (host_is_little_endian()) {
+-        if (n) std::memcpy(dst, src, n * 4);
++        if (n) std::memcpy(dst, src, n);
+         return;
+     }
+     for (size_t i = 0; i < n; i++) {

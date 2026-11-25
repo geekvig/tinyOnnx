@@ -1,0 +1,31 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -97,7 +97,7 @@
+ struct InferenceSession::RunState {
+     std::vector<std::shared_ptr<const Tensor>> slots;         // value id -> tensor (null = not produced / freed)
+     std::unique_ptr<std::atomic<int>[]> remaining;            // value id -> readers still to come
+-    std::unique_ptr<std::atomic<int>[]> indeg;                // node -> unmet input edges
++    std::unique_ptr<int[]> indeg;                             // node -> unmet input edges
+     std::atomic<int> pending{0};                              // nodes not yet finished
+     std::atomic<int> live{0}, peak{0};                        // memory statistics
+     std::atomic<bool> failed{false};
+@@ -172,8 +172,8 @@
+     st.slots.assign(V, nullptr);
+     st.remaining.reset(new std::atomic<int>[V]);
+     for (size_t v = 0; v < V; v++) st.remaining[v].store(plan_.consumer_count[v], std::memory_order_relaxed);
+-    st.indeg.reset(new std::atomic<int>[N]);
+-    for (size_t n = 0; n < N; n++) st.indeg[n].store(plan_.indegree[n], std::memory_order_relaxed);
++    st.indeg.reset(new int[N]);
++    for (size_t n = 0; n < N; n++) st.indeg[n] = plan_.indegree[n];
+     st.pending.store(int(N));
+ 
+     // 3. weights: shared, read-only, never freed
+@@ -269,7 +269,7 @@
+         }
+         std::vector<int> ready;
+         for (int d : plan_.dependents[size_t(idx)])
+-            if (st.indeg[size_t(d)].fetch_sub(1, std::memory_order_acq_rel) == 1) ready.push_back(d);
++            if (--st.indeg[size_t(d)] == 0) ready.push_back(d);
+ 
+         // Retire AFTER the dependents are counted, so `pending` reaches 0 only when truly done.
+         if (st.pending.fetch_sub(1, std::memory_order_acq_rel) == 1) {

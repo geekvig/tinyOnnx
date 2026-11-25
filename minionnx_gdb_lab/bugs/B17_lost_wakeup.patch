@@ -1,0 +1,15 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -272,10 +272,8 @@
+             if (st.indeg[size_t(d)].fetch_sub(1, std::memory_order_acq_rel) == 1) ready.push_back(d);
+ 
+         // Retire AFTER the dependents are counted, so `pending` reaches 0 only when truly done.
+-        if (st.pending.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+-            std::lock_guard<std::mutex> lk(st.m);              // lock before notify: no lost wake-up
+-            st.cv.notify_all();
+-        }
++        st.cv.notify_all();                                    // wake the caller: we might be the last node
++        st.pending.fetch_sub(1, std::memory_order_acq_rel);
+         if (ready.empty()) return;
+         const int keep = ready.back();
+         ready.pop_back();

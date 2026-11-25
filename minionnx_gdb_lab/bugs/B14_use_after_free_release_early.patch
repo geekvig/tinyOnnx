@@ -1,0 +1,31 @@
+--- a/src/stage4_runtime/session.cpp
++++ b/src/stage4_runtime/session.cpp
+@@ -199,6 +199,13 @@
+         if (!p) throw std::logic_error("internal: input '" + plan_.value_names[size_t(v)] + "' not ready for node '" + n.name + "'");
+         inputs.push_back(p);
+     }
++    // release inputs early so memory is reused sooner
++    for (int v : n.in)
++        if (v != kNoValue && !plan_.persistent[size_t(v)] &&
++            st.remaining[size_t(v)].fetch_sub(1, std::memory_order_acq_rel) == 1) {
++            st.slots[size_t(v)].reset();
++            st.live--;
++        }
+ 
+     const double start = st.prof ? st.now_us() : 0;
+     Tensor result = (*n.kernel)(KernelContext{intra_.get()}, inputs, n.attrs);
+@@ -213,14 +220,6 @@
+     st.bump_live();
+     if (plan_.consumer_count[size_t(out)] == 0 && !plan_.persistent[size_t(out)]) { st.slots[size_t(out)].reset(); st.live--; }
+ 
+-    // Release inputs AFTER the kernel is done with them. Whoever drops a count to zero frees
+-    // the tensor; every other reader has already decremented, so nobody still uses it.
+-    for (int v : n.in)
+-        if (v != kNoValue && !plan_.persistent[size_t(v)] &&
+-            st.remaining[size_t(v)].fetch_sub(1, std::memory_order_acq_rel) == 1) {
+-            st.slots[size_t(v)].reset();
+-            st.live--;
+-        }
+ }
+ 
+ // ============================================================================ parallel executor

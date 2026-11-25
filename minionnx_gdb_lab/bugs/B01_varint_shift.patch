@@ -1,0 +1,11 @@
+--- a/src/stage1_format/protobuf_wire.hpp
++++ b/src/stage1_format/protobuf_wire.hpp
+@@ -86,7 +86,7 @@
+     //         0x02 = 0 0000010  (last byte,    next 7 bits = 0000010)
+     uint64_t read_varint() {
+         uint64_t result = 0;
+-        for (int shift = 0; shift < 64; shift += 7) {
++        for (int shift = 0; shift < 64; shift += 8) {
+             if (p_ >= end_) fail("truncated varint", offset());
+             uint8_t b = *p_++;
+             result |= uint64_t(b & 0x7F) << shift;
